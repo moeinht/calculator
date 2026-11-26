@@ -1,31 +1,13 @@
-def calculator(num1, operation, num2):
-    if operation == '+':
-        return num1 + num2
+operations ={
+    "+" : lambda x,y: x+y,
+    "-": lambda x,y: x-y,
+    "/": lambda x,y: x/y,
+    "*": lambda x,y: x*y,
+    "**": lambda x,y: x**y,
+    "%": lambda x,y: x%y
+}
 
-    elif operation == '-':
-        return num1 - num2
-
-    elif operation == '*':
-        return num1 * num2
-
-    elif operation == '/':
-        if num2 == 0:
-            raise ZeroDivisionError("Cannot divide by zero!")
-        return num1 / num2
-
-    elif operation == '%':
-        if num2 == 0:
-            raise ZeroDivisionError("Cannot modulo by zero!")
-        return num1 % num2
-
-    elif operation == '**':
-        return num1 ** num2
-
-    else:
-        raise ValueError("Invalid operator!")
-
-
-last_calculation = 0
+last_calculation = None
 
 while True:
     num1 = input("Enter first number (exit): ").strip()
@@ -42,20 +24,28 @@ while True:
         continue
 
     try:
-        if num1 == 'ans':
+        if operation not in operations:
+            print("Invalid operation")
+            continue
+
+        if num1.lower() == "ans":
+            if last_calculation is None:
+                print("No previous calculation!")
+                continue
             num1 = last_calculation
         else:
             num1 = float(num1)
+
         num2 = float(num2)
 
-        result = calculator(num1, operation, num2)
+        result = operations[operation](num1, num2)
 
         last_calculation = result
 
-        print(f"\n{num1} {operation} {num2} = {result}\n")
+        print(result)
 
-    except ValueError as e:
-        print(f"Input error: {e}")
+    except ValueError:
+        print("Input error: Invalid number")
 
-    except ZeroDivisionError as e:
-        print(f"Math error: {e}")
+    except ZeroDivisionError:
+        print("Math error: Cannot divide by zero")
