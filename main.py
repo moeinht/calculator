@@ -9,6 +9,15 @@ operations ={
 
 last_calculation = None
 
+def parse_ans(value, last_calculation):
+    if value.lower() == 'ans':
+        if last_calculation is None:
+            raise ValueError("No previous calculation!")
+        return last_calculation
+    
+    return float(value)
+
+
 while True:
     num1 = input("Enter first number (exit): ").strip()
 
@@ -28,15 +37,8 @@ while True:
             print("Invalid operation")
             continue
 
-        if num1.lower() == "ans":
-            if last_calculation is None:
-                print("No previous calculation!")
-                continue
-            num1 = last_calculation
-        else:
-            num1 = float(num1)
-
-        num2 = float(num2)
+        num1 = parse_ans(num1 , last_calculation)
+        num2 = parse_ans(num1 , last_calculation)
 
         result = operations[operation](num1, num2)
 
