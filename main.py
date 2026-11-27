@@ -30,9 +30,10 @@ def calculation(num1,num2 ,operation,last_calculation):
 
 
 def get_numbers():
-    num1 = input("Enter first number (exit / history / clear): ").strip()
+    actions = ('exit', 'history', 'clear', 'undo') 
+    num1 = input(f"Enter first number {' / '.join(actions)} : ").strip()
 
-    if num1.lower() in ('exit', 'history', 'clear'):
+    if num1.lower() in actions:
         return num1.lower()
     
     
@@ -43,6 +44,23 @@ def get_numbers():
         raise ValueError("Please enter all values!\n")
 
     return num1 , num2, operation
+
+
+def show_histories(histories):
+    if not histories:
+        print("\nHistory is empty!\n")
+        return
+
+    print("\n----- History -----\n")
+
+    for i, history in enumerate(histories, start=1):
+        print(
+            f"{i}. {history['num1']} "
+            f"{history['operation']} "
+            f"{history['num2']} = {history['result']}"
+        )
+
+    print("\n----- End -----\n")
 
 def main():
     last_calculation = None
@@ -59,29 +77,36 @@ def main():
                 break
 
             if inputs == 'history':
-                if len(histories) == 0:
-                    print("\nHistory is empty!\n")
-                else:
-                    print("\n" + "-" * 5 + 'History', "-" * 5 + '\n')
-
-                for i, history in enumerate(histories, start=1):
-                    print(f"{i}. {history}")
-
-                print("\n" + "-" * 5 + 'End', "-" * 5 + "\n")
-
+                show_histories(histories)
                 continue
 
             if inputs == 'clear':
+                last_calculation = None
                 histories.clear()
                 print("\nHistory cleared!\n")
                 continue
-        
+
+            if inputs == 'undo':
+                if histories:
+                    histories.pop()
+
+                    if histories:
+                        last_calculation = histories[-1]['result']
+                    else:
+                        last_calculation = None
+
+                    print("Last calculation undone!\n")
+                else:
+                    print("\nThese is no history to undo it!\n")
+
+                continue
+
             num1 ,num2 ,operation = inputs
             
             result = calculation(num1,num2 , operation, last_calculation)
 
             last_calculation = result 
-            histories.append(f'{num1} {operation} {num2} = {result}')
+            histories.append({"num1": num1 , "num2": num2 , 'operation' : operation, 'result': result})
 
             print(result)
             
