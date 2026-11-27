@@ -30,12 +30,12 @@ def calculation(num1,num2 ,operation,last_calculation):
 
 
 def get_numbers():
-    num1 = input("Enter first number (exit): ").strip()
+    num1 = input("Enter first number (exit / history / clear): ").strip()
 
-    if num1.lower() == 'exit':
-        print("Goodbye!")
-        return None
-
+    if num1.lower() in ('exit', 'history', 'clear'):
+        return num1.lower()
+    
+    
     operation = input("Enter operation (+, -, /, *, %, **): ").strip()
     num2 = input("Enter second number: ").strip()
 
@@ -46,6 +46,7 @@ def get_numbers():
 
 def main():
     last_calculation = None
+    histories = []
 
     while True:
 
@@ -53,14 +54,34 @@ def main():
 
             inputs = get_numbers()        
         
-            if inputs is None:
+            if inputs == 'exit':
+                print("Goodbye!")
                 break
+
+            if inputs == 'history':
+                if len(histories) == 0:
+                    print("\nHistory is empty!\n")
+                else:
+                    print("\n" + "-" * 5 + 'History', "-" * 5 + '\n')
+
+                for i, history in enumerate(histories, start=1):
+                    print(f"{i}. {history}")
+
+                print("\n" + "-" * 5 + 'End', "-" * 5 + "\n")
+
+                continue
+
+            if inputs == 'clear':
+                histories.clear()
+                print("\nHistory cleared!\n")
+                continue
         
             num1 ,num2 ,operation = inputs
             
             result = calculation(num1,num2 , operation, last_calculation)
 
             last_calculation = result 
+            histories.append(f'{num1} {operation} {num2} = {result}')
 
             print(result)
             
