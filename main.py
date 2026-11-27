@@ -7,7 +7,6 @@ operations ={
     "%": lambda x,y: x%y
 }
 
-last_calculation = None
 
 def parse_ans(value, last_calculation):
     if value.lower() == 'ans':
@@ -17,37 +16,60 @@ def parse_ans(value, last_calculation):
     
     return float(value)
 
+def calculation(num1,num2 ,operation,last_calculation):
+    if operation not in operations:
+        raise ValueError("Invalid operation")
 
-while True:
+    num1 = parse_ans(num1 , last_calculation)
+    num2 = parse_ans(num2, last_calculation)
+
+    result = operations[operation](num1, num2)
+
+    return result
+
+
+
+def get_numbers():
     num1 = input("Enter first number (exit): ").strip()
 
     if num1.lower() == 'exit':
         print("Goodbye!")
-        break
+        return None
 
     operation = input("Enter operation (+, -, /, *, %, **): ").strip()
     num2 = input("Enter second number: ").strip()
 
     if not num1 or not num2 or not operation:
-        print("Please enter all values!\n")
-        continue
+        raise ValueError("Please enter all values!\n")
 
-    try:
-        if operation not in operations:
-            print("Invalid operation")
-            continue
+    return num1 , num2, operation
 
-        num1 = parse_ans(num1 , last_calculation)
-        num2 = parse_ans(num1 , last_calculation)
+def main():
+    last_calculation = None
 
-        result = operations[operation](num1, num2)
+    while True:
 
-        last_calculation = result
+        try:
 
-        print(result)
+            inputs = get_numbers()        
+        
+            if inputs is None:
+                break
+        
+            num1 ,num2 ,operation = inputs
+            
+            result = calculation(num1,num2 , operation, last_calculation)
 
-    except ValueError:
-        print("Input error: Invalid number")
+            last_calculation = result 
 
-    except ZeroDivisionError:
-        print("Math error: Cannot divide by zero")
+            print(result)
+            
+        except ValueError as e:
+            print(f"Error:{e}")
+
+        except ZeroDivisionError:
+            print("Math error: Cannot divide by zero")
+
+
+if __name__ == '__main__':
+    main()
